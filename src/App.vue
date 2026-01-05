@@ -7,8 +7,11 @@
 
     <div class="controls">
       <h2>Custom Disco Nummers</h2>
-      <p>Optioneel: voeg je eigen liedjes toe, anders worden automatisch willekeurige disco hits gebruikt.</p>
-      
+      <p>
+        Optioneel: voeg je eigen liedjes toe, anders worden automatisch
+        willekeurige disco hits gebruikt.
+      </p>
+
       <div class="input-group">
         <input
           v-model="newNumber"
@@ -20,8 +23,8 @@
       </div>
 
       <div class="numbers-list" v-if="availableNumbers.length > 0">
-        <div 
-          v-for="(number, index) in availableNumbers" 
+        <div
+          v-for="(number, index) in availableNumbers"
           :key="index"
           class="number-tag"
         >
@@ -30,9 +33,15 @@
         </div>
       </div>
 
-      <div class="input-group" style="margin-top: 20px;">
-        <button class="btn btn-secondary" @click="generateCard">Genereer Nieuwe Kaart</button>
-        <button class="btn btn-success" @click="exportToPDF" :disabled="bingoCards.length === 0">
+      <div class="input-group" style="margin-top: 20px">
+        <button class="btn btn-secondary" @click="generateCard">
+          Genereer Nieuwe Kaart
+        </button>
+        <button
+          class="btn btn-success"
+          @click="exportToPDF"
+          :disabled="bingoCards.length === 0"
+        >
           Download PDF
         </button>
         <button class="btn btn-primary" @click="generateMultipleCards">
@@ -43,31 +52,29 @@
 
     <!-- Master Songs List -->
     <div class="master-list-section">
-      <button 
-        class="btn btn-outline" 
-        @click="showMasterList = !showMasterList"
-      >
-        {{ showMasterList ? 'Verberg' : 'Toon' }} Master Lijst ({{ allSongs.length }} liedjes)
+      <button class="btn btn-outline" @click="showMasterList = !showMasterList">
+        {{ showMasterList ? "Verberg" : "Toon" }} Master Lijst ({{
+          allSongs.length
+        }}
+        liedjes)
       </button>
-      
+
       <div v-if="showMasterList" class="master-list">
         <div class="master-list-header">
           <h3>Master Lijst - {{ allSongs.length }} liedjes</h3>
           <div class="list-controls">
-            <button class="btn btn-sm btn-success" @click="printList">📄 Print Lijst</button>
+            <button class="btn btn-sm btn-success" @click="printList">
+              📄 Print Lijst
+            </button>
           </div>
         </div>
-        
+
         <div class="songs-list">
-          <div 
-            v-for="(song, index) in allSongs" 
-            :key="index"
-            class="song-item"
-          >
+          <div v-for="(song, index) in allSongs" :key="index" class="song-item">
             <span class="song-name">{{ song }}</span>
-            <button 
+            <button
               v-if="availableNumbers.includes(song)"
-              class="remove-btn" 
+              class="remove-btn"
               @click="removeFromMasterList(song)"
               title="Verwijder uit lijst"
             >
@@ -75,7 +82,7 @@
             </button>
           </div>
         </div>
-        
+
         <div class="add-to-master">
           <div class="input-group">
             <input
@@ -84,7 +91,9 @@
               placeholder="Voeg liedje toe aan master lijst..."
               @keyup.enter="addToMasterList"
             />
-            <button class="btn btn-primary" @click="addToMasterList">Toevoegen</button>
+            <button class="btn btn-primary" @click="addToMasterList">
+              Toevoegen
+            </button>
           </div>
         </div>
       </div>
@@ -102,96 +111,96 @@
 </template>
 
 <script>
-import BingoCard from './components/BingoCard.vue'
-import html2canvas from 'html2canvas'
-import jsPDF from 'jspdf'
+import BingoCard from "./components/BingoCard.vue";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    BingoCard
+    BingoCard,
   },
   data() {
     return {
-      newNumber: '',
-      newMasterSong: '',
+      newNumber: "",
+      newMasterSong: "",
       availableNumbers: [],
       // Lijst van populaire disco/party nummers
       songList: [
-        'Dancing Queen - ABBA',
-        'Stayin\' Alive - Bee Gees',
-        'I Will Survive - Gloria Gaynor',
-        'Le Freak - Chic',
-        'YMCA - Village People',
-        'Super Freak - Rick James',
-        'Billie Jean - Michael Jackson',
-        'Don\'t Stop Me Now - Queen',
-        'Uptown Funk - Bruno Mars',
-        'Can\'t Stop the Feeling - Justin Timberlake',
-        'September - Earth, Wind & Fire',
-        'I Want Your Love - Chic',
-        'Good Times - Chic',
-        'Funky Town - Lipps Inc.',
-        'Get Lucky - Daft Punk',
-        'Upside Down - Diana Ross',
-        'Hot Stuff - Donna Summer',
-        'Last Dance - Donna Summer',
-        'Bad Girls - Donna Summer',
-        'Love Is in the Air - John Paul Young',
-        'Celebration - Kool & The Gang',
-        'Ladies Night - Kool & The Gang',
-        'Get Down Tonight - KC and the Sunshine Band',
-        'That\'s the Way (I Like It) - KC and the Sunshine Band',
-        'Play That Funky Music - Wild Cherry',
-        'Brick House - Commodores',
-        'I Feel Good - James Brown',
-        'Sex Machine - James Brown',
-        'Car Wash - Rose Royce',
-        'Best of My Love - The Emotions',
-        'Boogie Wonderland - Earth, Wind & Fire',
-        'I\'m Every Woman - Chaka Khan',
-        'We Are Family - Sister Sledge',
-        'He\'s the Greatest Dancer - Sister Sledge',
-        'Ring My Bell - Anita Ward',
-        'Shake Your Body - The Jacksons',
-        'Blame It on the Boogie - The Jacksons',
-        'Rock With You - Michael Jackson',
-        'Off the Wall - Michael Jackson',
-        'Another Brick in the Wall - Pink Floyd'
+        "Dancing Queen - ABBA",
+        "Stayin' Alive - Bee Gees",
+        "I Will Survive - Gloria Gaynor",
+        "Le Freak - Chic",
+        "YMCA - Village People",
+        "Super Freak - Rick James",
+        "Billie Jean - Michael Jackson",
+        "Don't Stop Me Now - Queen",
+        "Uptown Funk - Bruno Mars",
+        "Can't Stop the Feeling - Justin Timberlake",
+        "September - Earth, Wind & Fire",
+        "I Want Your Love - Chic",
+        "Good Times - Chic",
+        "Funky Town - Lipps Inc.",
+        "Get Lucky - Daft Punk",
+        "Upside Down - Diana Ross",
+        "Hot Stuff - Donna Summer",
+        "Last Dance - Donna Summer",
+        "Bad Girls - Donna Summer",
+        "Love Is in the Air - John Paul Young",
+        "Celebration - Kool & The Gang",
+        "Ladies Night - Kool & The Gang",
+        "Get Down Tonight - KC and the Sunshine Band",
+        "That's the Way (I Like It) - KC and the Sunshine Band",
+        "Play That Funky Music - Wild Cherry",
+        "Brick House - Commodores",
+        "I Feel Good - James Brown",
+        "Sex Machine - James Brown",
+        "Car Wash - Rose Royce",
+        "Best of My Love - The Emotions",
+        "Boogie Wonderland - Earth, Wind & Fire",
+        "I'm Every Woman - Chaka Khan",
+        "We Are Family - Sister Sledge",
+        "He's the Greatest Dancer - Sister Sledge",
+        "Ring My Bell - Anita Ward",
+        "Shake Your Body - The Jacksons",
+        "Blame It on the Boogie - The Jacksons",
+        "Rock With You - Michael Jackson",
+        "Off the Wall - Michael Jackson",
+        "Another Brick in the Wall - Pink Floyd",
       ],
       bingoCards: [],
-      showMasterList: false
-    }
+      showMasterList: false,
+    };
   },
   computed: {
     allSongs() {
       // Combineer custom liedjes met default liedjes en verwijder duplicaten
-      const combined = [...this.availableNumbers, ...this.songList]
-      return [...new Set(combined)].sort()
-    }
+      const combined = [...this.availableNumbers, ...this.songList];
+      return [...new Set(combined)].sort();
+    },
   },
   methods: {
     addToMasterList() {
-      const song = this.newMasterSong.trim()
+      const song = this.newMasterSong.trim();
       if (song && song.length > 3) {
         if (!this.availableNumbers.includes(song)) {
-          this.availableNumbers.push(song)
-          this.newMasterSong = ''
+          this.availableNumbers.push(song);
+          this.newMasterSong = "";
         } else {
-          alert('Dit liedje bestaat al!')
+          alert("Dit liedje bestaat al!");
         }
       } else {
-        alert('Voer een geldig liedje in')
+        alert("Voer een geldig liedje in");
       }
     },
     removeFromMasterList(song) {
-      const index = this.availableNumbers.indexOf(song)
+      const index = this.availableNumbers.indexOf(song);
       if (index > -1) {
-        this.availableNumbers.splice(index, 1)
+        this.availableNumbers.splice(index, 1);
       }
     },
     printList() {
-      const printWindow = window.open('', '_blank')
+      const printWindow = window.open("", "_blank");
       printWindow.document.write(`
         <html>
           <head>
@@ -220,122 +229,129 @@ export default {
             <h1>DISCO BINGO - Master Lijst</h1>
             <p>Totaal: ${this.allSongs.length} liedjes</p>
             <div class="song-list">
-              ${this.allSongs.map(song => `
+              ${this.allSongs
+                .map(
+                  (song) => `
                 <div class="song-item">
                   <div class="checkbox"></div>
                   <span>${song}</span>
                 </div>
-              `).join('')}
+              `
+                )
+                .join("")}
             </div>
           </body>
         </html>
-      `)
-      printWindow.document.close()
-      printWindow.print()
+      `);
+      printWindow.document.close();
+      printWindow.print();
     },
     addNumber() {
-      const song = this.newNumber.trim()
+      const song = this.newNumber.trim();
       if (song && song.length > 3) {
         if (!this.availableNumbers.includes(song)) {
-          this.availableNumbers.push(song)
-          this.newNumber = ''
+          this.availableNumbers.push(song);
+          this.newNumber = "";
         } else {
-          alert('Dit liedje bestaat al!')
+          alert("Dit liedje bestaat al!");
         }
       } else {
-        alert('Voer een geldig liedje in (bijv. Dancing Queen - ABBA)')
+        alert("Voer een geldig liedje in (bijv. Dancing Queen - ABBA)");
       }
     },
 
     removeNumber(index) {
-      this.availableNumbers.splice(index, 1)
+      this.availableNumbers.splice(index, 1);
     },
     shuffleArray(array) {
-      const shuffled = [...array]
+      const shuffled = [...array];
       for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
-      return shuffled
+      return shuffled;
     },
     generateCard() {
-      const cardNumbers = this.generateBingoNumbers()
-      this.bingoCards = [cardNumbers]
+      const cardNumbers = this.generateBingoNumbers();
+      this.bingoCards = [cardNumbers];
     },
     generateMultipleCards() {
-      this.bingoCards = []
-      
+      this.bingoCards = [];
+
       for (let i = 0; i < 4; i++) {
-        const cardNumbers = this.generateBingoNumbers()
-        this.bingoCards.push(cardNumbers)
+        const cardNumbers = this.generateBingoNumbers();
+        this.bingoCards.push(cardNumbers);
       }
     },
     generateBingoNumbers() {
-      const cardNumbers = []
-      
+      const cardNumbers = [];
+
       // Gebruik custom songs als beschikbaar, anders default songs
-      const songsToUse = this.availableNumbers.length > 0 ? 
-        [...this.availableNumbers, ...this.songList] : 
-        [...this.songList]
-      
+      const songsToUse =
+        this.availableNumbers.length > 0
+          ? [...this.availableNumbers, ...this.songList]
+          : [...this.songList];
+
       // Shuffle songs
-      const shuffledSongs = this.shuffleArray(songsToUse)
-      
+      const shuffledSongs = this.shuffleArray(songsToUse);
+
       // Generate 5x5 grid
       for (let i = 0; i < 25; i++) {
         if (i === 12) {
           // Middle cell is always FREE
-          cardNumbers.push('FREE')
+          cardNumbers.push("FREE");
         } else {
-          cardNumbers.push(shuffledSongs[i % shuffledSongs.length])
+          cardNumbers.push(shuffledSongs[i % shuffledSongs.length]);
         }
       }
-      
-      return cardNumbers
+
+      return cardNumbers;
     },
     async exportToPDF() {
       try {
-        const pdf = new jsPDF('p', 'mm', 'a4')
-        const cardsPerPage = 2
-        
+        const pdf = new jsPDF("p", "mm", "a4");
+        const cardsPerPage = 2;
+
         for (let i = 0; i < this.bingoCards.length; i++) {
-          const cardElement = document.getElementById(`card-${i}`)
-          
+          const cardElement = document.getElementById(`card-${i}`);
+
           if (cardElement) {
             const canvas = await html2canvas(cardElement, {
               scale: 2,
               useCORS: true,
-              backgroundColor: '#ffffff'
-            })
-            
-            const imgData = canvas.toDataURL('image/png')
-            const imgWidth = 180
-            const imgHeight = (canvas.height * imgWidth) / canvas.width
-            
+              backgroundColor: "#ffffff",
+            });
+
+            const imgData = canvas.toDataURL("image/png");
+            const imgWidth = 180;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
             // Calculate position
-            const pageIndex = Math.floor(i / cardsPerPage)
-            const cardIndex = i % cardsPerPage
-            
+            const pageIndex = Math.floor(i / cardsPerPage);
+            const cardIndex = i % cardsPerPage;
+
             // Add new page if needed
             if (i > 0 && cardIndex === 0) {
-              pdf.addPage()
+              pdf.addPage();
             }
-            
-            const x = 15
-            const y = cardIndex * (imgHeight + 20) + 15
-            
-            pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight)
+
+            const x = 15;
+            const y = cardIndex * (imgHeight + 20) + 15;
+
+            pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
           }
         }
-        
-        pdf.save('disco-bingo-kaarten.pdf')
+
+        pdf.save("disco-bingo-kaarten.pdf");
       } catch (error) {
-        console.error('Error generating PDF:', error)
-        alert('Er ging iets mis bij het genereren van de PDF. Probeer het opnieuw.')
+        console.error("Error generating PDF:", error);
+        alert(
+          "Er ging iets mis bij het genereren van de PDF. Probeer het opnieuw."
+        );
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -494,11 +510,11 @@ export default {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .list-controls {
     justify-content: space-between;
   }
-  
+
   .songs-list {
     max-height: 300px;
   }

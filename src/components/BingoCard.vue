@@ -5,7 +5,7 @@
       <h4 class="card-title">BINGO</h4>
       <p class="card-subtitle">The Party Edition</p>
     </div>
-    
+
     <div class="bingo-grid-container">
       <div class="bingo-headers">
         <div class="bingo-header">M</div>
@@ -14,7 +14,7 @@
         <div class="bingo-header">I</div>
         <div class="bingo-header">C</div>
       </div>
-      
+
       <div class="bingo-grid">
         <div
           v-for="(number, index) in numbers"
@@ -32,33 +32,33 @@
 
 <script>
 export default {
-  name: 'BingoCard',
+  name: "BingoCard",
   props: {
     numbers: {
       type: Array,
-      required: true
+      required: true,
     },
     cardId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      markedCells: []
-    }
+      markedCells: [],
+    };
   },
   methods: {
     toggleCell(index) {
-      const cellIndex = this.markedCells.indexOf(index)
+      const cellIndex = this.markedCells.indexOf(index);
       if (cellIndex > -1) {
-        this.markedCells.splice(cellIndex, 1)
+        this.markedCells.splice(cellIndex, 1);
       } else {
-        this.markedCells.push(index)
+        this.markedCells.push(index);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -70,7 +70,7 @@ export default {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   max-width: 500px;
   width: 100%;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .card-header {
@@ -165,7 +165,7 @@ export default {
 }
 
 .bingo-cell[data-marked="true"]::after {
-  content: '✓';
+  content: "✓";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -173,6 +173,6 @@ export default {
   font-size: 1.5rem;
   font-weight: bold;
   color: white;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 </style>
