@@ -13,17 +13,28 @@
 
       <div class="input-group" style="margin-top: 20px">
         <button class="btn btn-secondary" @click="generateCard">
-          Genereer Nieuwe Kaart
+          Genereer Enkele Kaart
         </button>
         <button
+          v-if="bingoCards.length > 0"
           class="btn btn-success"
           @click="exportToPDF"
-          :disabled="bingoCards.length === 0"
         >
-          Download PDF
+          Download PDF ({{ bingoCards.length }} kaart{{ bingoCards.length !== 1 ? 'en' : '' }})
         </button>
+      </div>
+      
+      <div class="input-group" style="margin-top: 15px">
+        <input
+          v-model.number="numberOfCards"
+          type="number"
+          min="1"
+          max="50"
+          placeholder="Aantal kaarten"
+          class="number-input"
+        />
         <button class="btn btn-primary" @click="generateMultipleCards">
-          Genereer 4 Kaarten
+          Genereer {{ numberOfCards || 'X' }} Kaarten
         </button>
       </div>
     </div>
@@ -91,6 +102,7 @@ export default {
       newNumber: "",
       newMasterSong: "",
       masterListText: "",
+      numberOfCards: 4,
       availableNumbers: [],
       // Lijst van populaire disco/party nummers
       songList: [
@@ -259,9 +271,10 @@ export default {
       this.bingoCards = [cardNumbers];
     },
     generateMultipleCards() {
+      const numCards = this.numberOfCards || 4;
       this.bingoCards = [];
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < numCards; i++) {
         const cardNumbers = this.generateBingoNumbers();
         this.bingoCards.push(cardNumbers);
       }
@@ -293,35 +306,38 @@ export default {
     async exportToPDF() {
       try {
         const pdf = new jsPDF("p", "mm", "a4");
-        const cardsPerPage = 2;
+        const cardsPerPage = 4; // 4 kaarten per pagina in 2x2 grid
+        const cardsPerRow = 2;
+        const cardWidth = 85;
+        const cardSpacing = 10;
 
         for (let i = 0; i < this.bingoCards.length; i++) {
           const cardElement = document.getElementById(`card-${i}`);
 
           if (cardElement) {
+            // Nieuwe pagina toevoegen als nodig (na elke 4 kaarten)
+            if (i > 0 && i % cardsPerPage === 0) {
+              pdf.addPage();
+            }
+
             const canvas = await html2canvas(cardElement, {
-              scale: 2,
+              scale: 1.5,
               useCORS: true,
               backgroundColor: "#ffffff",
             });
 
             const imgData = canvas.toDataURL("image/png");
-            const imgWidth = 180;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const imgHeight = (canvas.height * cardWidth) / canvas.width;
 
-            // Calculate position
-            const pageIndex = Math.floor(i / cardsPerPage);
-            const cardIndex = i % cardsPerPage;
+            // Bereken positie in 2x2 grid op huidige pagina
+            const cardOnPage = i % cardsPerPage;
+            const row = Math.floor(cardOnPage / cardsPerRow);
+            const col = cardOnPage % cardsPerRow;
 
-            // Add new page if needed
-            if (i > 0 && cardIndex === 0) {
-              pdf.addPage();
-            }
+            const x = col * (cardWidth + cardSpacing) + 15;
+            const y = row * (imgHeight + cardSpacing) + 15;
 
-            const x = 15;
-            const y = cardIndex * (imgHeight + 20) + 15;
-
-            pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+            pdf.addImage(imgData, "PNG", x, y, cardWidth, imgHeight);
           }
         }
 
@@ -530,5 +546,10 @@ export default {
   .songs-list {
     max-height: 300px;
   }
+}
+
+.number-input {
+  max-width: 120px !important;
+  flex: none !important;
 }
 </style>
