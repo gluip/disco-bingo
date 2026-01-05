@@ -25,6 +25,11 @@
       </div>
       
       <div class="input-group" style="margin-top: 15px">
+        <select v-model="gridSize" class="grid-select">
+          <option value="3">3x3 (9 vakjes)</option>
+          <option value="4">4x4 (16 vakjes)</option>
+          <option value="5">5x5 (25 vakjes)</option>
+        </select>
         <input
           v-model.number="numberOfCards"
           type="number"
@@ -81,6 +86,7 @@ I Will Survive - Gloria Gaynor"
         v-for="(card, index) in bingoCards"
         :key="index"
         :numbers="card"
+        :grid-size="gridSize"
         :card-id="'card-' + index"
       />
     </div>
@@ -103,6 +109,7 @@ export default {
       newMasterSong: "",
       masterListText: "",
       numberOfCards: 4,
+      gridSize: 5,
       availableNumbers: [],
       // Lijst van populaire disco/party nummers
       songList: [
@@ -282,6 +289,8 @@ export default {
     },
     generateBingoNumbers() {
       const cardNumbers = [];
+      const totalCells = this.gridSize * this.gridSize;
+      const middleIndex = Math.floor(totalCells / 2);
 
       // Gebruik custom songs als beschikbaar, anders default songs als fallback
       const songsToUse = this.availableNumbers.length > 0 
@@ -291,10 +300,10 @@ export default {
       // Shuffle songs
       const shuffledSongs = this.shuffleArray(songsToUse);
 
-      // Generate 5x5 grid
-      for (let i = 0; i < 25; i++) {
-        if (i === 12) {
-          // Middle cell is always FREE
+      // Generate grid
+      for (let i = 0; i < totalCells; i++) {
+        if (i === middleIndex && this.gridSize === 5) {
+          // Middle cell is FREE only for 5x5 grid
           cardNumbers.push("FREE");
         } else {
           cardNumbers.push(shuffledSongs[i % shuffledSongs.length]);
@@ -551,5 +560,16 @@ export default {
 .number-input {
   max-width: 120px !important;
   flex: none !important;
+}
+
+.grid-select {
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-right: 10px;
+  background: white;
+  cursor: pointer;
+  min-width: 140px;
 }
 </style>

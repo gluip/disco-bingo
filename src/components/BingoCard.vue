@@ -7,15 +7,11 @@
     </div>
 
     <div class="bingo-grid-container">
-      <div class="bingo-headers">
-        <div class="bingo-header">M</div>
-        <div class="bingo-header">U</div>
-        <div class="bingo-header">S</div>
-        <div class="bingo-header">I</div>
-        <div class="bingo-header">C</div>
+      <div class="bingo-headers" :class="'grid-' + gridSize">
+        <div v-for="letter in gridLetters" :key="letter" class="bingo-header">{{ letter }}</div>
       </div>
 
-      <div class="bingo-grid">
+      <div class="bingo-grid" :class="'grid-' + gridSize">
         <div
           v-for="(number, index) in numbers"
           :key="index"
@@ -38,10 +34,24 @@ export default {
       type: Array,
       required: true,
     },
+    gridSize: {
+      type: Number,
+      default: 5,
+    },
     cardId: {
       type: String,
       required: true,
     },
+  },
+  computed: {
+    gridLetters() {
+      const letterSets = {
+        3: ['G', 'A', 'C'],  // GAC (atletiekvereniging)
+        4: ['S', 'O', 'N', 'G'],  // SONG 
+        5: ['M', 'U', 'S', 'I', 'C']  // MUSIC
+      };
+      return letterSets[this.gridSize] || letterSets[5];
+    }
   },
   data() {
     return {
@@ -102,9 +112,20 @@ export default {
 
 .bingo-headers {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
   gap: 2px;
   margin-bottom: 5px;
+}
+
+.bingo-headers.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.bingo-headers.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.bingo-headers.grid-5 {
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .bingo-header {
@@ -120,8 +141,19 @@ export default {
 
 .bingo-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
   gap: 2px;
+}
+
+.bingo-grid.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.bingo-grid.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.bingo-grid.grid-5 {
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .bingo-cell {
