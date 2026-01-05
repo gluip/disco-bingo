@@ -164,7 +164,7 @@ export default {
         "Ring My Bell - Anita Ward",
         "Shake Your Body - The Jacksons",
         "Blame It on the Boogie - The Jacksons",
-        "Rock With You - Michael Jackson",
+        "Rock With You - M ichael Jackson",
         "Off the Wall - Michael Jackson",
         "Another Brick in the Wall - Pink Floyd",
       ],
