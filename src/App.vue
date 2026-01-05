@@ -6,32 +6,10 @@
     </header>
 
     <div class="controls">
-      <h2>Custom Disco Nummers</h2>
+      <h2>Disco Bingo Generator</h2>
       <p>
-        Optioneel: voeg je eigen liedjes toe, anders worden automatisch
-        willekeurige disco hits gebruikt.
+        Pas je master lijst aan in het tekstveld hieronder, of gebruik de standaard disco hits.
       </p>
-
-      <div class="input-group">
-        <input
-          v-model="newNumber"
-          type="text"
-          placeholder="Voeg een liedje toe (bijv. 'Dancing Queen - ABBA', 'Stayin' Alive - Bee Gees')"
-          @keyup.enter="addNumber"
-        />
-        <button class="btn btn-primary" @click="addNumber">Toevoegen</button>
-      </div>
-
-      <div class="numbers-list" v-if="availableNumbers.length > 0">
-        <div
-          v-for="(number, index) in availableNumbers"
-          :key="index"
-          class="number-tag"
-        >
-          {{ number }}
-          <button class="remove-btn" @click="removeNumber(index)">×</button>
-        </div>
-      </div>
 
       <div class="input-group" style="margin-top: 20px">
         <button class="btn btn-secondary" @click="generateCard">
@@ -70,30 +48,18 @@
         </div>
 
         <div class="songs-list">
-          <div v-for="(song, index) in allSongs" :key="index" class="song-item">
-            <span class="song-name">{{ song }}</span>
-            <button
-              v-if="availableNumbers.includes(song)"
-              class="remove-btn"
-              @click="removeFromMasterList(song)"
-              title="Verwijder uit lijst"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-
-        <div class="add-to-master">
-          <div class="input-group">
-            <input
-              v-model="newMasterSong"
-              type="text"
-              placeholder="Voeg liedje toe aan master lijst..."
-              @keyup.enter="addToMasterList"
-            />
-            <button class="btn btn-primary" @click="addToMasterList">
-              Toevoegen
-            </button>
+          <textarea
+            v-model="masterListText"
+            @blur="parseMasterList"
+            placeholder="Voeg je liedjes toe, één per regel:
+Dancing Queen - ABBA
+Stayin' Alive - Bee Gees
+I Will Survive - Gloria Gaynor"
+            rows="15"
+            class="master-list-textarea"
+          ></textarea>
+          <div class="list-info">
+            <small>{{ allSongs.length }} liedjes totaal - Bewerk direct in het tekstveld</small>
           </div>
         </div>
       </div>
@@ -124,6 +90,7 @@ export default {
     return {
       newNumber: "",
       newMasterSong: "",
+      masterListText: "",
       availableNumbers: [],
       // Lijst van populaire disco/party nummers
       songList: [
@@ -172,6 +139,9 @@ export default {
       showMasterList: false,
     };
   },
+  mounted() {
+    this.updateMasterListText();
+  },
   computed: {
     allSongs() {
       // Combineer custom liedjes met default liedjes en verwijder duplicaten
@@ -186,6 +156,7 @@ export default {
         if (!this.availableNumbers.includes(song)) {
           this.availableNumbers.push(song);
           this.newMasterSong = "";
+          this.updateMasterListText();
         } else {
           alert("Dit liedje bestaat al!");
         }
@@ -193,10 +164,22 @@ export default {
         alert("Voer een geldig liedje in");
       }
     },
+    parseMasterList() {
+      const songs = this.masterListText
+        .split('\n')
+        .map(song => song.trim())
+        .filter(song => song.length > 3);
+      
+      this.availableNumbers = [...new Set(songs)]; // Remove duplicates
+    },
+    updateMasterListText() {
+      this.masterListText = this.allSongs.join('\n');
+    },
     removeFromMasterList(song) {
       const index = this.availableNumbers.indexOf(song);
       if (index > -1) {
         this.availableNumbers.splice(index, 1);
+        this.updateMasterListText();
       }
     },
     printList() {
@@ -480,6 +463,35 @@ export default {
 
 .add-to-master .input-group {
   margin: 0;
+}
+
+.master-list-textarea {
+  width: 100%;
+  min-height: 300px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  resize: vertical;
+  background: white;
+}
+
+.master-list-textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+.list-info {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.list-info small {
+  color: #666;
+  font-style: italic;
 }
 
 .btn-success {
