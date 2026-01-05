@@ -1,7 +1,7 @@
 <template>
   <div class="bingo-card" :id="cardId">
     <div class="card-header">
-      <h3 class="card-title">DISCO</h3>
+      <h3 class="card-title">GAC DISCO</h3>
       <h4 class="card-title">BINGO</h4>
       <p class="card-subtitle">The Party Edition</p>
     </div>

@@ -1,14 +1,14 @@
 <template>
   <div class="app">
     <header class="app-header">
-      <h1 class="app-title">DISCO BINGO</h1>
-      <p class="app-subtitle">The Party Edition</p>
+      <h1 class="app-title">GAC DISCO BINGO</h1>
+      <p class="app-subtitle">Atletiekvereniging GAC - Party Edition</p>
     </header>
 
     <div class="controls">
-      <h2>Disco Bingo Generator</h2>
+      <h2>GAC Disco Bingo Generator</h2>
       <p>
-        Pas je master lijst aan in het tekstveld hieronder, of gebruik de standaard disco hits.
+        Pas je master lijst aan in het tekstveld hieronder voor jullie GAC feest, of gebruik de standaard disco hits.
       </p>
 
       <div class="input-group" style="margin-top: 20px">
@@ -50,7 +50,7 @@
 
       <div v-if="showMasterList" class="master-list">
         <div class="master-list-header">
-          <h3>Master Lijst - {{ allSongs.length }} liedjes</h3>
+          <h3>GAC Disco Bingo Master Lijst - {{ allSongs.length }} liedjes</h3>
           <div class="list-controls">
             <button class="btn btn-sm btn-success" @click="printList">
               📄 Print Lijst
@@ -152,13 +152,14 @@ export default {
     };
   },
   mounted() {
+    // Laad default songs bij opstarten
+    this.availableNumbers = [...this.songList];
     this.updateMasterListText();
   },
   computed: {
     allSongs() {
-      // Combineer custom liedjes met default liedjes en verwijder duplicaten
-      const combined = [...this.availableNumbers, ...this.songList];
-      return [...new Set(combined)].sort();
+      // Alleen custom liedjes gebruiken, geen default meer
+      return [...new Set(this.availableNumbers)].sort();
     },
   },
   methods: {
@@ -199,7 +200,7 @@ export default {
       printWindow.document.write(`
         <html>
           <head>
-            <title>Disco Bingo - Master Lijst</title>
+            <title>GAC Disco Bingo - Master Lijst</title>
             <style>
               body { font-family: Arial, sans-serif; padding: 20px; }
               h1 { text-align: center; color: #333; }
@@ -221,8 +222,8 @@ export default {
             </style>
           </head>
           <body>
-            <h1>DISCO BINGO - Master Lijst</h1>
-            <p>Totaal: ${this.allSongs.length} liedjes</p>
+            <h1>GAC DISCO BINGO - Master Lijst</h1>
+            <p>Atletiekvereniging GAC - Totaal: ${this.allSongs.length} liedjes</p>
             <div class="song-list">
               ${this.allSongs
                 .map(
@@ -282,11 +283,10 @@ export default {
     generateBingoNumbers() {
       const cardNumbers = [];
 
-      // Gebruik custom songs als beschikbaar, anders default songs
-      const songsToUse =
-        this.availableNumbers.length > 0
-          ? [...this.availableNumbers, ...this.songList]
-          : [...this.songList];
+      // Gebruik custom songs als beschikbaar, anders default songs als fallback
+      const songsToUse = this.availableNumbers.length > 0 
+        ? this.availableNumbers 
+        : this.songList;
 
       // Shuffle songs
       const shuffledSongs = this.shuffleArray(songsToUse);
@@ -341,7 +341,7 @@ export default {
           }
         }
 
-        pdf.save("disco-bingo-kaarten.pdf");
+        pdf.save("GAC-disco-bingo-kaarten.pdf");
       } catch (error) {
         console.error("Error generating PDF:", error);
         alert(
